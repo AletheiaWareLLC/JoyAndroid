@@ -31,6 +31,8 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class GLScene extends Scene implements GLSurfaceView.Renderer {
 
+    public static final String BACKGROUND = "background";
+
     private final int[] viewport = new int[4];
     private final List<String> programNames = new ArrayList<>();
     private final Map<String, GLProgramNode> programNodes = new HashMap<>();
@@ -92,7 +94,16 @@ public class GLScene extends Scene implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        float r = 0.0f;
+        float g = 0.0f;
+        float b = 0.0f;
+        float[] bg = getFloatArray(BACKGROUND);
+        if (bg != null) {
+            r = bg[0];
+            g = bg[1];
+            b = bg[2];
+        }
+        GLES20.glClearColor(r, g, b, 1.0f);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
         GLES20.glDepthFunc(GLES20.GL_LEQUAL);
