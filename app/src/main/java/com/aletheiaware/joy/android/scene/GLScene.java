@@ -31,6 +31,10 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class GLScene extends Scene implements GLSurfaceView.Renderer {
 
+    public interface FrameCallback {
+        boolean onFrame();
+    }
+
     public static final String BACKGROUND = "background";
 
     private final int[] viewport = new int[4];
@@ -39,6 +43,8 @@ public class GLScene extends Scene implements GLSurfaceView.Renderer {
     private final Map<String, GLVertexMesh> vertexMeshes = new HashMap<>();
     private final Map<String, GLVertexNormalMesh> vertexNormalMeshes = new HashMap<>();
     //private final Map<String, GLVertexNormalTextureMesh> vertexNormalTextureMeshes = new HashMap<>();
+
+    private FrameCallback callback = null;
 
     public void putProgramNode(String name, GLProgramNode program) {
         programNames.add(name);
@@ -67,6 +73,10 @@ public class GLScene extends Scene implements GLSurfaceView.Renderer {
 
     public int[] getViewport() {
         return viewport;
+    }
+
+    public void setFrameCallback(FrameCallback callback) {
+        this.callback = callback;
     }
 
     @Override
@@ -112,6 +122,11 @@ public class GLScene extends Scene implements GLSurfaceView.Renderer {
         GLES20.glFrontFace(GLES20.GL_CCW);
         for (int i = 0; i < programNames.size(); i++) {
             programNodes.get(programNames.get(i)).draw(this);
+        }
+        if (callback != null) {
+            if (!callback.onFrame()) {
+                callback = null;
+            }
         }
         GLUtils.checkError("GLScene.onDrawFrame");
     }
