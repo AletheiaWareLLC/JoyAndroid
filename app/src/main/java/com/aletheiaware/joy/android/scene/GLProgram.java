@@ -58,7 +58,7 @@ public class GLProgram {
     public int getAttributeLocation(String name) {
         Integer loc = attributes.get(name);
         if (loc == null || loc < 0) {
-            throw new RuntimeException("GL Attribute Location not set");
+            throw new RuntimeException("GL Attribute Location not set for " + name);
         }
         return loc;
     }
@@ -66,7 +66,7 @@ public class GLProgram {
     public int getUniformLocation(String name) {
         Integer loc = uniforms.get(name);
         if (loc == null || loc < 0) {
-            throw new RuntimeException("GL Uniform Location not set");
+            throw new RuntimeException("GL Uniform Location not set for " + name);
         }
         return loc;
     }
