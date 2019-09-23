@@ -5,11 +5,10 @@ This is an Android implementation of Joy.
 
 Setup
 =====
-Libraries
+JoyAndroid should be in the same parent directory as the following prerequisite projects;
 
-    mkdir app/libs
-    ln -s <joyjavalib> app/libs/JoyJava.jar
-    ln -s <protolib> app/libs/protobuf-lite-3.0.1.jar
+    JavaCommon
+    JoyJava
 
 Build
 =====
