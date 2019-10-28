@@ -23,7 +23,8 @@ import com.aletheiaware.joy.scene.Vector;
 
 public class GLCameraNode extends SceneGraphNode {
 
-    private boolean initialized = false;
+    private float width = 0;
+    private float height = 0;
 
     public GLCameraNode() {
         super();
@@ -38,11 +39,10 @@ public class GLCameraNode extends SceneGraphNode {
         android.opengl.Matrix.setLookAtM(view.get(), 0, cameraEye.getX(), cameraEye.getY(), cameraEye.getZ(), cameraLookAt.getX(), cameraLookAt.getY(), cameraLookAt.getZ(), cameraUp.getX(), cameraUp.getY(), cameraUp.getZ());
     }
 
-    public void setupProjection(Scene scene) {
+    public void setupProjection(Scene scene, int[] viewport) {
         // Create a new perspective projection matrix.
-        int[] viewport = ((GLScene) scene).getViewport();
-        float width = viewport[2];
-        float height = viewport[3];
+        width = viewport[2];
+        height = viewport[3];
         float left;
         float right;
         float bottom;
@@ -79,10 +79,10 @@ public class GLCameraNode extends SceneGraphNode {
 
     @Override
     public void before(Scene scene) {
-        if (!initialized) {
-            initialized = true;
+        int[] viewport = ((GLScene) scene).getViewport();
+        if (width != viewport[2] || height != viewport[3]) {
             setupView(scene);
-            setupProjection(scene);
+            setupProjection(scene, viewport);
         }
         GLUtils.checkError("GLCameraNode.before");
     }
