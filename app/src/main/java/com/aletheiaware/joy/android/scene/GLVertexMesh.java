@@ -28,10 +28,10 @@ import java.nio.FloatBuffer;
 
 public class GLVertexMesh extends VertexMesh {
 
-    public final int[] vbo = new int[1];
+    public final int[] vertexBufferObject = new int[1];
 
-    public GLVertexMesh(int size, int vertices, FloatBuffer vb) {
-        super(size, vertices, vb);
+    public GLVertexMesh(int vertices, FloatBuffer vb) {
+        super(vertices, vb);
     }
 
     public GLVertexMesh(Mesh mesh) throws IOException {
@@ -52,20 +52,20 @@ public class GLVertexMesh extends VertexMesh {
 
     public void draw(GLProgram program) {
         // Vertex
-        if (vbo[0] == 0) {
+        if (vertexBufferObject[0] == 0) {
             vertexBuffer.position(0);
-            GLES20.glGenBuffers(1, vbo, 0);
-            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vbo[0]);
-            GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, bufferSize, vertexBuffer, GLES20.GL_STATIC_DRAW);
-            System.out.println("vbo " + vbo[0]);
+            GLES20.glGenBuffers(1, vertexBufferObject, 0);
+            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vertexBufferObject[0]);
+            GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, vertexBufferSize, vertexBuffer, GLES20.GL_STATIC_DRAW);
+            System.out.println("VertexBufferObject " + vertexBufferObject[0]);
         }
-        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vbo[0]);
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vertexBufferObject[0]);
         int vertexHandle = program.getAttributeLocation("a_Position");
         GLES20.glEnableVertexAttribArray(vertexHandle);
         GLES20.glVertexAttribPointer(vertexHandle, 3, GLES20.GL_FLOAT, false, 0, 0);
 
         // Draw
-        GLES20.glDrawArrays(GLES20.GL_LINES, 0, numVertices);
+        GLES20.glDrawArrays(GLES20.GL_LINES, 0, vertexCount);
 
         // Clean up
         GLES20.glDisableVertexAttribArray(vertexHandle);

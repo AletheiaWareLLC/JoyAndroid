@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aletheia Ware LLC
+ * Copyright 2020 Aletheia Ware LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,36 +19,37 @@ package com.aletheiaware.joy.android.scene;
 import android.opengl.GLES20;
 
 import com.aletheiaware.joy.JoyProto.Mesh;
-import com.aletheiaware.joy.scene.VertexNormalMesh;
+import com.aletheiaware.joy.scene.VertexNormalTextureMesh;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.FloatBuffer;
 
-public class GLVertexNormalMesh extends VertexNormalMesh {
+public class GLVertexNormalTextureMesh extends VertexNormalTextureMesh {
 
     // TODO move to GLProgram
     public final int[] vertexBufferObject = new int[1];
     public final int[] normalBufferObject = new int[1];
+    public final int[] textureBufferObject = new int[1];
 
-    public GLVertexNormalMesh(int vertices, FloatBuffer vb, FloatBuffer nb) {
-        super(vertices, vb, nb);
+    public GLVertexNormalTextureMesh(int vertices, FloatBuffer vb, FloatBuffer nb, FloatBuffer tb) {
+        super(vertices, vb, nb, tb);
     }
 
-    public GLVertexNormalMesh(Mesh mesh) throws IOException {
+    public GLVertexNormalTextureMesh(Mesh mesh) throws IOException {
         super(mesh);
     }
 
-    public GLVertexNormalMesh(byte[] data) throws IOException {
+    public GLVertexNormalTextureMesh(byte[] data) throws IOException {
         super(data);
     }
 
-    public GLVertexNormalMesh(InputStream in) throws IOException {
+    public GLVertexNormalTextureMesh(InputStream in) throws IOException {
         super(in);
     }
 
-    public GLVertexNormalMesh(DataInputStream in) throws IOException {
+    public GLVertexNormalTextureMesh(DataInputStream in) throws IOException {
         super(in);
     }
 
@@ -79,6 +80,19 @@ public class GLVertexNormalMesh extends VertexNormalMesh {
         GLES20.glEnableVertexAttribArray(normalHandle);
         GLES20.glVertexAttribPointer(normalHandle, 3, GLES20.GL_FLOAT, false, 0, 0);
 
+        // Texture
+        if (textureBufferObject[0] == 0) {
+            textureBuffer.position(0);
+            GLES20.glGenBuffers(1, textureBufferObject, 0);
+            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, textureBufferObject[0]);
+            GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, textureBufferSize, textureBuffer, GLES20.GL_STATIC_DRAW);
+            System.out.println("TextureBufferObject " + textureBufferObject[0]);
+        }
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, textureBufferObject[0]);
+        int textureHandle = program.getAttributeLocation("a_TexCoord");
+        GLES20.glEnableVertexAttribArray(textureHandle);
+        GLES20.glVertexAttribPointer(textureHandle, 2, GLES20.GL_FLOAT, false, 0, 0);
+
         // Draw
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertexCount);
 
@@ -86,6 +100,6 @@ public class GLVertexNormalMesh extends VertexNormalMesh {
         GLES20.glDisableVertexAttribArray(vertexHandle);
         GLES20.glDisableVertexAttribArray(normalHandle);
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
-        GLUtils.checkError("GLVertexNormalMesh.draw");
+        GLUtils.checkError("GLVertexNormalTextureMesh.draw");
     }
 }

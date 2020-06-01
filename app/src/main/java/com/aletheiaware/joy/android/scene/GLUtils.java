@@ -97,27 +97,37 @@ public class GLUtils {
         return shader;
     }
 
-    public static int loadTexture(InputStream in) throws IOException {
+    public static int[] loadTexture(InputStream in) throws IOException {
         final int[] textureHandle = new int[1];
         GLES20.glGenTextures(1, textureHandle, 0);
         if (textureHandle[0] != 0) {
             final BitmapFactory.Options options = new BitmapFactory.Options();
             options.inScaled = false;// No pre-scaling
             final Bitmap bitmap = BitmapFactory.decodeStream(in, null, options);
+
             // Bind to the texture in OpenGL
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0]);
 
+            // Set wrapping
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_REPEAT);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_REPEAT);
+
             // Set filtering
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
 
             // Load the bitmap into the bound texture.
             android.opengl.GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
 
+            // Generate mipmaps
+            GLES20.glGenerateMipmap(GLES20.GL_TEXTURE_2D);
+
             // Recycle the bitmap, since its data has been loaded into OpenGL.
             bitmap.recycle();
-            return textureHandle[0];
+        } else {
+            textureHandle[0] = -1;
         }
-        return -1;
+        checkError("loadTexture");
+        return textureHandle;
     }
 }

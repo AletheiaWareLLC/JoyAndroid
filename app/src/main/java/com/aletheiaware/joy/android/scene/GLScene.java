@@ -42,7 +42,7 @@ public class GLScene extends Scene implements GLSurfaceView.Renderer {
     private final Map<String, GLProgramNode> programNodes = new ConcurrentHashMap<>();
     private final Map<String, GLVertexMesh> vertexMeshes = new ConcurrentHashMap<>();
     private final Map<String, GLVertexNormalMesh> vertexNormalMeshes = new ConcurrentHashMap<>();
-    //private final Map<String, GLVertexNormalTextureMesh> vertexNormalTextureMeshes = new ConcurrentHashMap<>();
+    private final Map<String, GLVertexNormalTextureMesh> vertexNormalTextureMeshes = new ConcurrentHashMap<>();
 
     private FrameCallback callback = null;
 
@@ -69,6 +69,14 @@ public class GLScene extends Scene implements GLSurfaceView.Renderer {
 
     public void putVertexNormalMesh(String name, GLVertexNormalMesh mesh) {
         vertexNormalMeshes.put(name, mesh);
+    }
+
+    public GLVertexNormalTextureMesh getVertexNormalTextureMesh(String name) {
+        return vertexNormalTextureMeshes.get(name);
+    }
+
+    public void putVertexNormalTextureMesh(String name, GLVertexNormalTextureMesh mesh) {
+        vertexNormalTextureMeshes.put(name, mesh);
     }
 
     public int[] getViewport() {

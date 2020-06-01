@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aletheia Ware LLC
+ * Copyright 2020 Aletheia Ware LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,12 +22,12 @@ import com.aletheiaware.joy.scene.Matrix;
 import com.aletheiaware.joy.scene.Scene;
 import com.aletheiaware.joy.scene.SceneGraphNode;
 
-public class GLVertexNormalMeshNode extends SceneGraphNode {
+public class GLVertexNormalTextureMeshNode extends SceneGraphNode {
 
     private final String programName;
     private final String meshName;
 
-    public GLVertexNormalMeshNode(String programName, String meshName) {
+    public GLVertexNormalTextureMeshNode(String programName, String meshName) {
         super();
         this.programName = programName;
         this.meshName = meshName;
@@ -54,7 +54,7 @@ public class GLVertexNormalMeshNode extends SceneGraphNode {
         GLES20.glUniformMatrix4fv(program.getUniformLocation("u_MVPMatrix"), 1, false, mvp.get(), 0);
 
         // Draw vertex normal mesh
-        GLVertexNormalMesh mesh = glScene.getVertexNormalMesh(meshName);
+        GLVertexNormalTextureMesh mesh = glScene.getVertexNormalTextureMesh(meshName);
         if (mesh != null) {
             mesh.draw(program);
         }

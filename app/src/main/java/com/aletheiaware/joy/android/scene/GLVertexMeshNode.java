@@ -53,7 +53,7 @@ public class GLVertexMeshNode extends SceneGraphNode {
         GLES20.glUniformMatrix4fv(program.getUniformLocation("u_MVPMatrix"), 1, false, mvp.get(), 0);
 
         // Draw vertex mesh
-        GLVertexMesh mesh = glScene.getVertexMesh(meshName);;
+        GLVertexMesh mesh = glScene.getVertexMesh(meshName);
         if (mesh != null) {
             mesh.draw(program);
         }
