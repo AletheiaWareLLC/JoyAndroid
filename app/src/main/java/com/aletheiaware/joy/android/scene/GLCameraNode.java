@@ -16,6 +16,8 @@
 
 package com.aletheiaware.joy.android.scene;
 
+import android.opengl.GLES20;
+
 import com.aletheiaware.joy.scene.Matrix;
 import com.aletheiaware.joy.scene.Scene;
 import com.aletheiaware.joy.scene.SceneGraphNode;
@@ -23,11 +25,14 @@ import com.aletheiaware.joy.scene.Vector;
 
 public class GLCameraNode extends SceneGraphNode {
 
+    private final String programName;
+
     private float width = 0;
     private float height = 0;
 
-    public GLCameraNode() {
+    public GLCameraNode(String programName) {
         super();
+        this.programName = programName;
     }
 
     public void setupView(Scene scene) {
@@ -37,6 +42,10 @@ public class GLCameraNode extends SceneGraphNode {
         Vector cameraUp = scene.getVector("camera-up");
         Matrix view = scene.getMatrix("view");
         android.opengl.Matrix.setLookAtM(view.get(), 0, cameraEye.getX(), cameraEye.getY(), cameraEye.getZ(), cameraLookAt.getX(), cameraLookAt.getY(), cameraLookAt.getZ(), cameraUp.getX(), cameraUp.getY(), cameraUp.getZ());
+
+        GLProgram program = ((GLScene) scene).getProgramNode(programName).getProgram();
+        int cameraEyeHandle = program.getUniformLocation("u_CameraEye");
+        GLES20.glUniform3f(cameraEyeHandle, cameraEye.getX(), cameraEye.getY(), cameraEye.getZ());
     }
 
     public void setupProjection(Scene scene, int[] viewport) {
