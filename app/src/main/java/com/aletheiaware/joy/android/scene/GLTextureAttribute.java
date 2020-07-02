@@ -39,8 +39,8 @@ public abstract class GLTextureAttribute extends TextureAttribute {
         GLScene glScene = ((GLScene) scene);
         GLProgram program = glScene.getProgramNode(programName).getProgram();
         int textureHandle = program.getUniformLocation("u_Texture");
-        int texturedHandle = program.getUniformLocation("u_Textured");
-        if (textureHandle >= 0 && texturedHandle >= 0) {
+        int textureEnabledHandle = program.getUniformLocation("u_TextureEnabled");
+        if (textureHandle >= 0 && textureEnabledHandle >= 0) {
             int[] textureId = getTexture(scene);
             if (textureId == null || textureId.length == 0 || textureId[0] == -1) {
                 load();
@@ -54,10 +54,10 @@ public abstract class GLTextureAttribute extends TextureAttribute {
                 // Set the texture uniform sampler to texture unit 0.
                 GLES20.glUniform1i(textureHandle, 0);
                 // Enable texturing.
-                GLES20.glUniform1i(texturedHandle, 1);
+                GLES20.glUniform1i(textureEnabledHandle, 1);
             } else {
                 // Enable texturing.
-                GLES20.glUniform1i(texturedHandle, 0);
+                GLES20.glUniform1i(textureEnabledHandle, 0);
             }
         }
     }
