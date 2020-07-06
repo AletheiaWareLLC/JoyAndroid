@@ -63,6 +63,8 @@ public class GLVertexNormalMesh extends VertexNormalMesh {
         } catch (Exception e) {
             // Ignored
         }
+        int vertexHandle = -1;
+        int normalHandle = -1;
 
         // Vertex
         if (vertexBufferObject[0] == 0) {
@@ -74,9 +76,13 @@ public class GLVertexNormalMesh extends VertexNormalMesh {
             System.out.println("VertexBufferObject " + vertexBufferObject[0]);
         }
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vertexBufferObject[0]);
-        int vertexHandle = program.getAttributeLocation("a_Position");
-        GLES20.glEnableVertexAttribArray(vertexHandle);
-        GLES20.glVertexAttribPointer(vertexHandle, 3, GLES20.GL_FLOAT, false, 0, 0);
+        try {
+            vertexHandle = program.getAttributeLocation("a_Position");
+            GLES20.glEnableVertexAttribArray(vertexHandle);
+            GLES20.glVertexAttribPointer(vertexHandle, 3, GLES20.GL_FLOAT, false, 0, 0);
+        } catch (Exception e) {
+            // Ignored
+        }
 
         // Normal
         if (normalBufferObject[0] == 0) {
@@ -88,16 +94,24 @@ public class GLVertexNormalMesh extends VertexNormalMesh {
             System.out.println("NormalBufferObject " + normalBufferObject[0]);
         }
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, normalBufferObject[0]);
-        int normalHandle = program.getAttributeLocation("a_Normal");
-        GLES20.glEnableVertexAttribArray(normalHandle);
-        GLES20.glVertexAttribPointer(normalHandle, 3, GLES20.GL_FLOAT, false, 0, 0);
+        try {
+            normalHandle = program.getAttributeLocation("a_Normal");
+            GLES20.glEnableVertexAttribArray(normalHandle);
+            GLES20.glVertexAttribPointer(normalHandle, 3, GLES20.GL_FLOAT, false, 0, 0);
+        } catch (Exception e) {
+            // Ignored
+        }
 
         // Draw
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertexCount);
 
         // Clean up
-        GLES20.glDisableVertexAttribArray(vertexHandle);
-        GLES20.glDisableVertexAttribArray(normalHandle);
+        if (vertexHandle != -1) {
+            GLES20.glDisableVertexAttribArray(vertexHandle);
+        }
+        if (normalHandle != -1) {
+            GLES20.glDisableVertexAttribArray(normalHandle);
+        }
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
         GLUtils.checkError("GLVertexNormalMesh.draw");
     }

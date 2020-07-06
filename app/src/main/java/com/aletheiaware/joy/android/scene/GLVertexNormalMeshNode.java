@@ -50,14 +50,28 @@ public class GLVertexNormalMeshNode extends SceneGraphNode {
         Matrix mvp = scene.getMatrix("model-view-projection");
         mv.makeMultiplication(view, model);
         mvp.makeMultiplication(projection, mv);
-        GLES20.glUniformMatrix4fv(program.getUniformLocation("u_MVMatrix"), 1, false, mv.get(), 0);
-        GLES20.glUniformMatrix4fv(program.getUniformLocation("u_MVPMatrix"), 1, false, mvp.get(), 0);
+
+        // Try set u_MVMatrix
+        try {
+            GLES20.glUniformMatrix4fv(program.getUniformLocation("u_MVMatrix"), 1, false, mv.get(), 0);
+        } catch (Exception e) {
+            // Ignored
+        }
+
+        // Try set u_MVPMatrix
+        try {
+            GLES20.glUniformMatrix4fv(program.getUniformLocation("u_MVPMatrix"), 1, false, mvp.get(), 0);
+        } catch (Exception e) {
+            // Ignored
+        }
 
         // Draw vertex normal mesh
         GLVertexNormalMesh mesh = glScene.getVertexNormalMesh(meshName);
         if (mesh != null) {
             mesh.draw(program, meshName);
         }
+
+        GLUtils.checkError("GLVertexNormalMeshNode.before");
     }
 
     @Override
