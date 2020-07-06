@@ -38,19 +38,24 @@ public class GLLightNode extends LightNode {
     public void before(Scene scene) {
         if (!initialized) {
             initialized = true;
-            GLProgram program = ((GLScene) scene).getProgramNode(programName).getProgram();
-            int lightHandle = program.getUniformLocation("u_LightPos");
-            float[] light = scene.getFloatArray(getLightName());
-            Matrix model = scene.getMatrix("model");
-            Matrix view = scene.getMatrix("view");
+            // Try set u_LightPos
+            try {
+                GLProgram program = ((GLScene) scene).getProgramNode(programName).getProgram();
+                int lightHandle = program.getUniformLocation("u_LightPos");
+                float[] light = scene.getFloatArray(getLightName());
+                Matrix model = scene.getMatrix("model");
+                Matrix view = scene.getMatrix("view");
 
-            // Model to world coords
-            android.opengl.Matrix.multiplyMV(lightWorld, 0, model.get(), 0, light, 0);
-            // World to eye coords
-            android.opengl.Matrix.multiplyMV(lightEye, 0, view.get(), 0, lightWorld, 0);
+                // Model to world coords
+                android.opengl.Matrix.multiplyMV(lightWorld, 0, model.get(), 0, light, 0);
+                // World to eye coords
+                android.opengl.Matrix.multiplyMV(lightEye, 0, view.get(), 0, lightWorld, 0);
 
-            // Pass in the light information
-            GLES20.glUniform3fv(lightHandle, 1, lightEye, 0);
+                // Pass in the light information
+                GLES20.glUniform3fv(lightHandle, 1, lightEye, 0);
+        } catch (Exception e) {
+            // Ignored
+        }
             GLUtils.checkError("GLLightNode.before");
         }
     }
