@@ -28,10 +28,6 @@ import java.nio.FloatBuffer;
 
 public class GLVertexNormalMesh extends VertexNormalMesh {
 
-    // TODO move to GLProgram
-    public final int[] vertexBufferObject = new int[1];
-    public final int[] normalBufferObject = new int[1];
-
     public GLVertexNormalMesh(int vertices, FloatBuffer vb, FloatBuffer nb) {
         super(vertices, vb, nb);
     }
@@ -52,13 +48,29 @@ public class GLVertexNormalMesh extends VertexNormalMesh {
         super(in);
     }
 
-    public void draw(GLProgram program) {
+    public void draw(GLProgram program, String meshName) {
+        int[] vertexBufferObject = new int[1];
+        int[] normalBufferObject = new int[1];
+        String vboKey = meshName + ".vbo";
+        String nboKey = meshName + ".nbo";
+        try {
+            vertexBufferObject[0] = program.getBuffer(vboKey);
+        } catch (Exception e) {
+            // Ignored
+        }
+        try {
+            normalBufferObject[0] = program.getBuffer(nboKey);
+        } catch (Exception e) {
+            // Ignored
+        }
+
         // Vertex
         if (vertexBufferObject[0] == 0) {
             vertexBuffer.position(0);
             GLES20.glGenBuffers(1, vertexBufferObject, 0);
             GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vertexBufferObject[0]);
             GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, vertexBufferSize, vertexBuffer, GLES20.GL_STATIC_DRAW);
+            program.putBuffer(vboKey, vertexBufferObject[0]);
             System.out.println("VertexBufferObject " + vertexBufferObject[0]);
         }
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vertexBufferObject[0]);
@@ -72,6 +84,7 @@ public class GLVertexNormalMesh extends VertexNormalMesh {
             GLES20.glGenBuffers(1, normalBufferObject, 0);
             GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, normalBufferObject[0]);
             GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, normalBufferSize, normalBuffer, GLES20.GL_STATIC_DRAW);
+            program.putBuffer(nboKey, normalBufferObject[0]);
             System.out.println("NormalBufferObject " + normalBufferObject[0]);
         }
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, normalBufferObject[0]);

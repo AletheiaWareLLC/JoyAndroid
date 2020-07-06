@@ -29,6 +29,7 @@ public class GLProgram {
 
     private final Map<String, Integer> attributes = new HashMap<>();
     private final Map<String, Integer> uniforms = new HashMap<>();
+    private final Map<String, Integer> buffers = new HashMap<>();
     private final String name;
     private final String vertexSource;
     private final String fragmentSource;
@@ -69,6 +70,18 @@ public class GLProgram {
             throw new RuntimeException("GL Uniform Location not set for " + name);
         }
         return loc;
+    }
+
+    public int getBuffer(String name) {
+        Integer id = buffers.get(name);
+        if (id == null || id < 0) {
+            throw new RuntimeException("GL Buffer not set for " + name);
+        }
+        return id;
+    }
+
+    public void putBuffer(String name, int id) {
+        buffers.put(name, id);
     }
 
     public void reshape(int x, int y, int width, int height) {

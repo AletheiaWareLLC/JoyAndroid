@@ -28,8 +28,6 @@ import java.nio.FloatBuffer;
 
 public class GLVertexMesh extends VertexMesh {
 
-    public final int[] vertexBufferObject = new int[1];
-
     public GLVertexMesh(int vertices, FloatBuffer vb) {
         super(vertices, vb);
     }
@@ -50,13 +48,22 @@ public class GLVertexMesh extends VertexMesh {
         super(in);
     }
 
-    public void draw(GLProgram program) {
+    public void draw(GLProgram program, String meshName) {
+        int[] vertexBufferObject = new int[1];
+        String vboKey = meshName + ".vbo";
+        try {
+            vertexBufferObject[0] = program.getBuffer(vboKey);
+        } catch (Exception e) {
+            // Ignored
+        }
+
         // Vertex
         if (vertexBufferObject[0] == 0) {
             vertexBuffer.position(0);
             GLES20.glGenBuffers(1, vertexBufferObject, 0);
             GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vertexBufferObject[0]);
             GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, vertexBufferSize, vertexBuffer, GLES20.GL_STATIC_DRAW);
+            program.putBuffer(vboKey, vertexBufferObject[0]);
             System.out.println("VertexBufferObject " + vertexBufferObject[0]);
         }
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vertexBufferObject[0]);

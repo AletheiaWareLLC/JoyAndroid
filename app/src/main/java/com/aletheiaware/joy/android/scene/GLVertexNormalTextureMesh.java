@@ -28,11 +28,6 @@ import java.nio.FloatBuffer;
 
 public class GLVertexNormalTextureMesh extends VertexNormalTextureMesh {
 
-    // TODO move to GLProgram
-    public final int[] vertexBufferObject = new int[1];
-    public final int[] normalBufferObject = new int[1];
-    public final int[] textureBufferObject = new int[1];
-
     public GLVertexNormalTextureMesh(int vertices, FloatBuffer vb, FloatBuffer nb, FloatBuffer tb) {
         super(vertices, vb, nb, tb);
     }
@@ -53,13 +48,36 @@ public class GLVertexNormalTextureMesh extends VertexNormalTextureMesh {
         super(in);
     }
 
-    public void draw(GLProgram program) {
+    public void draw(GLProgram program, String meshName) {
+        int[] vertexBufferObject = new int[1];
+        int[] normalBufferObject = new int[1];
+        int[] textureBufferObject = new int[1];
+        String vboKey = meshName + ".vbo";
+        String nboKey = meshName + ".nbo";
+        String tboKey = meshName + ".tbo";
+        try {
+            vertexBufferObject[0] = program.getBuffer(vboKey);
+        } catch (Exception e) {
+            // Ignored
+        }
+        try {
+            normalBufferObject[0] = program.getBuffer(nboKey);
+        } catch (Exception e) {
+            // Ignored
+        }
+        try {
+            textureBufferObject[0] = program.getBuffer(tboKey);
+        } catch (Exception e) {
+            // Ignored
+        }
+
         // Vertex
         if (vertexBufferObject[0] == 0) {
             vertexBuffer.position(0);
             GLES20.glGenBuffers(1, vertexBufferObject, 0);
             GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vertexBufferObject[0]);
             GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, vertexBufferSize, vertexBuffer, GLES20.GL_STATIC_DRAW);
+            program.putBuffer(vboKey, vertexBufferObject[0]);
             System.out.println("VertexBufferObject " + vertexBufferObject[0]);
         }
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vertexBufferObject[0]);
@@ -73,6 +91,7 @@ public class GLVertexNormalTextureMesh extends VertexNormalTextureMesh {
             GLES20.glGenBuffers(1, normalBufferObject, 0);
             GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, normalBufferObject[0]);
             GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, normalBufferSize, normalBuffer, GLES20.GL_STATIC_DRAW);
+            program.putBuffer(nboKey, normalBufferObject[0]);
             System.out.println("NormalBufferObject " + normalBufferObject[0]);
         }
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, normalBufferObject[0]);
@@ -86,6 +105,7 @@ public class GLVertexNormalTextureMesh extends VertexNormalTextureMesh {
             GLES20.glGenBuffers(1, textureBufferObject, 0);
             GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, textureBufferObject[0]);
             GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, textureBufferSize, textureBuffer, GLES20.GL_STATIC_DRAW);
+            program.putBuffer(tboKey, textureBufferObject[0]);
             System.out.println("TextureBufferObject " + textureBufferObject[0]);
         }
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, textureBufferObject[0]);
@@ -99,6 +119,7 @@ public class GLVertexNormalTextureMesh extends VertexNormalTextureMesh {
         // Clean up
         GLES20.glDisableVertexAttribArray(vertexHandle);
         GLES20.glDisableVertexAttribArray(normalHandle);
+        GLES20.glDisableVertexAttribArray(textureHandle);
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
         GLUtils.checkError("GLVertexNormalTextureMesh.draw");
     }

@@ -55,7 +55,7 @@ public class GLVertexMeshNode extends SceneGraphNode {
         // Draw vertex mesh
         GLVertexMesh mesh = glScene.getVertexMesh(meshName);
         if (mesh != null) {
-            mesh.draw(program);
+            mesh.draw(program, meshName);
         }
     }
 

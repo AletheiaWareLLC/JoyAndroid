@@ -56,7 +56,7 @@ public class GLVertexNormalTextureMeshNode extends SceneGraphNode {
         // Draw vertex normal mesh
         GLVertexNormalTextureMesh mesh = glScene.getVertexNormalTextureMesh(meshName);
         if (mesh != null) {
-            mesh.draw(program);
+            mesh.draw(program, meshName);
         }
     }
 
