@@ -43,9 +43,14 @@ public class GLCameraNode extends SceneGraphNode {
         Matrix view = scene.getMatrix("view");
         android.opengl.Matrix.setLookAtM(view.get(), 0, cameraEye.getX(), cameraEye.getY(), cameraEye.getZ(), cameraLookAt.getX(), cameraLookAt.getY(), cameraLookAt.getZ(), cameraUp.getX(), cameraUp.getY(), cameraUp.getZ());
 
-        GLProgram program = ((GLScene) scene).getProgramNode(programName).getProgram();
-        int cameraEyeHandle = program.getUniformLocation("u_CameraEye");
-        GLES20.glUniform3f(cameraEyeHandle, cameraEye.getX(), cameraEye.getY(), cameraEye.getZ());
+        // Try set u_CameraEye
+        try {
+            GLProgram program = ((GLScene) scene).getProgramNode(programName).getProgram();
+            int cameraEyeHandle = program.getUniformLocation("u_CameraEye");
+            GLES20.glUniform3f(cameraEyeHandle, cameraEye.getX(), cameraEye.getY(), cameraEye.getZ());
+        } catch (Exception e) {
+            // Ignored
+        }
     }
 
     public void setupProjection(Scene scene, int[] viewport) {
