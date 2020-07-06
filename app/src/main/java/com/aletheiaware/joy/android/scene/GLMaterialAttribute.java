@@ -34,12 +34,18 @@ public class GLMaterialAttribute extends MaterialAttribute {
 
     @Override
     public void set(Scene scene) {
-        GLProgram program = ((GLScene) scene).getProgramNode(programName).getProgram();
-        int materialHandle = program.getUniformLocation("u_Material");
-        float[] material = getMaterial(scene);
-        if (materialHandle >= 0 && material != null) {
-            // Pass in the material information
-            GLES20.glUniform3fv(materialHandle, 1, material, 0);
+        // Try set u_Material
+        try {
+            GLProgram program = ((GLScene) scene).getProgramNode(programName).getProgram();
+            int materialHandle = program.getUniformLocation("u_Material");
+            float[] material = getMaterial(scene);
+            if (materialHandle >= 0 && material != null) {
+                // Pass in the material information
+                GLES20.glUniform3fv(materialHandle, 1, material, 0);
+            }
+        } catch (Exception e) {
+            // Ignored
         }
+        GLUtils.checkError("GLMaterialAttribute.set");
     }
 }
