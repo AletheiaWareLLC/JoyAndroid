@@ -103,6 +103,8 @@ public class GLUtils {
         if (textureHandle[0] != 0) {
             final BitmapFactory.Options options = new BitmapFactory.Options();
             options.inScaled = false;// No pre-scaling
+            options.inPremultiplied = false;// No pre-multiplying
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             final Bitmap bitmap = BitmapFactory.decodeStream(in, null, options);
 
             // Bind to the texture in OpenGL
