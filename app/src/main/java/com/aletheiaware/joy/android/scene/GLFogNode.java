@@ -34,13 +34,18 @@ public class GLFogNode extends SceneGraphNode {
 
     @Override
     public void before(Scene scene) {
-        GLProgram program = ((GLScene) scene).getProgramNode(programName).getProgram();
-        int fogColourHandle = program.getUniformLocation("u_FogColour");
-        int fogEnabledHandle = program.getUniformLocation("u_FogEnabled");
-        float[] fogColour = scene.getFloatArray("fog-colour");
-        // Pass in the fog information
-        GLES20.glUniform4fv(fogColourHandle, 1, fogColour, 0);
-        GLES20.glUniform1i(fogEnabledHandle, 1);
+        // Try set u_FogColour and u_FogEnabled
+        try {
+            GLProgram program = ((GLScene) scene).getProgramNode(programName).getProgram();
+            int fogColourHandle = program.getUniformLocation("u_FogColour");
+            int fogEnabledHandle = program.getUniformLocation("u_FogEnabled");
+            float[] fogColour = scene.getFloatArray("fog-colour");
+            // Pass in the fog information
+            GLES20.glUniform4fv(fogColourHandle, 1, fogColour, 0);
+            GLES20.glUniform1i(fogEnabledHandle, 1);
+        } catch (Exception e) {
+            // Ignored
+        }
         GLUtils.checkError("GLFogNode.before");
     }
 
