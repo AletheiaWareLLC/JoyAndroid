@@ -36,29 +36,35 @@ public abstract class GLTextureAttribute extends TextureAttribute {
 
     @Override
     public void set(Scene scene) {
-        GLScene glScene = ((GLScene) scene);
-        GLProgram program = glScene.getProgramNode(programName).getProgram();
-        int textureHandle = program.getUniformLocation("u_Texture");
-        int textureEnabledHandle = program.getUniformLocation("u_TextureEnabled");
-        if (textureHandle >= 0 && textureEnabledHandle >= 0) {
-            int[] textureId = getTexture(scene);
-            if (textureId == null || textureId.length == 0 || textureId[0] == -1) {
-                load();
-                textureId = getTexture(scene);
+        // Try set u_Texture and u_TextureEnabled
+        try {
+            GLScene glScene = ((GLScene) scene);
+            GLProgram program = glScene.getProgramNode(programName).getProgram();
+            int textureHandle = program.getUniformLocation("u_Texture");
+            int textureEnabledHandle = program.getUniformLocation("u_TextureEnabled");
+            if (textureHandle >= 0 && textureEnabledHandle >= 0) {
+                int[] textureId = getTexture(scene);
+                if (textureId == null || textureId.length == 0 || textureId[0] == -1) {
+                    load();
+                    textureId = getTexture(scene);
+                }
+                if (textureId != null && textureId.length > 0) {
+                    // Set the active texture unit to texture unit 0.
+                    GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+                    // Bind the texture to this unit.
+                    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId[0]);
+                    // Set the texture uniform sampler to texture unit 0.
+                    GLES20.glUniform1i(textureHandle, 0);
+                    // Enable texturing.
+                    GLES20.glUniform1i(textureEnabledHandle, 1);
+                } else {
+                    // Enable texturing.
+                    GLES20.glUniform1i(textureEnabledHandle, 0);
+                }
             }
-            if (textureId != null && textureId.length > 0) {
-                // Set the active texture unit to texture unit 0.
-                GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-                // Bind the texture to this unit.
-                GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId[0]);
-                // Set the texture uniform sampler to texture unit 0.
-                GLES20.glUniform1i(textureHandle, 0);
-                // Enable texturing.
-                GLES20.glUniform1i(textureEnabledHandle, 1);
-            } else {
-                // Enable texturing.
-                GLES20.glUniform1i(textureEnabledHandle, 0);
-            }
+        } catch (Exception e) {
+            // Ignored
         }
+        GLUtils.checkError("GLTextureAttribute.set");
     }
 }
