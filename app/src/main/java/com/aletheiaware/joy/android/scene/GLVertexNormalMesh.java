@@ -73,7 +73,7 @@ public class GLVertexNormalMesh extends VertexNormalMesh {
             GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vertexBufferObject[0]);
             GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, vertexBufferSize, vertexBuffer, GLES20.GL_STATIC_DRAW);
             program.putBuffer(vboKey, vertexBufferObject[0]);
-            System.out.println("VertexBufferObject " + vertexBufferObject[0]);
+            System.out.println(program.getName() + " " + meshName + " VertexBufferObject " + vertexBufferObject[0]);
         }
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vertexBufferObject[0]);
         try {
@@ -91,7 +91,7 @@ public class GLVertexNormalMesh extends VertexNormalMesh {
             GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, normalBufferObject[0]);
             GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, normalBufferSize, normalBuffer, GLES20.GL_STATIC_DRAW);
             program.putBuffer(nboKey, normalBufferObject[0]);
-            System.out.println("NormalBufferObject " + normalBufferObject[0]);
+            System.out.println(program.getName() + " " + meshName + " NormalBufferObject " + normalBufferObject[0]);
         }
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, normalBufferObject[0]);
         try {
