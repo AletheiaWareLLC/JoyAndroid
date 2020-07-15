@@ -39,10 +39,14 @@ public class GLFogNode extends SceneGraphNode {
             GLProgram program = ((GLScene) scene).getProgramNode(programName).getProgram();
             int fogColourHandle = program.getUniformLocation("u_FogColour");
             int fogEnabledHandle = program.getUniformLocation("u_FogEnabled");
+            int fogIntensityHandle = program.getUniformLocation("u_FogIntensity");
             float[] fogColour = scene.getFloatArray("fog-colour");
+            int[] fogEnabled = scene.getIntArray("fog-enabled");
+            float[] fogIntensity = scene.getFloatArray("fog-intensity");
             // Pass in the fog information
             GLES20.glUniform4fv(fogColourHandle, 1, fogColour, 0);
-            GLES20.glUniform1i(fogEnabledHandle, 1);
+            GLES20.glUniform1i(fogEnabledHandle, fogEnabled[0]);
+            GLES20.glUniform1f(fogIntensityHandle, fogIntensity[0]);
         } catch (Exception e) {
             // Ignored
         }
