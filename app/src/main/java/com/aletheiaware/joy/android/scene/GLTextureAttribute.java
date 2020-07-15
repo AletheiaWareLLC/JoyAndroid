@@ -58,7 +58,7 @@ public abstract class GLTextureAttribute extends TextureAttribute {
                     // Enable texturing.
                     GLES20.glUniform1i(textureEnabledHandle, 1);
                 } else {
-                    // Enable texturing.
+                    // Disable texturing.
                     GLES20.glUniform1i(textureEnabledHandle, 0);
                 }
             }
@@ -66,5 +66,22 @@ public abstract class GLTextureAttribute extends TextureAttribute {
             // Ignored
         }
         GLUtils.checkError("GLTextureAttribute.set");
+    }
+
+    @Override
+    public void unset(Scene scene) {
+        // Try unset u_TextureEnabled
+        try {
+            GLScene glScene = ((GLScene) scene);
+            GLProgram program = glScene.getProgramNode(programName).getProgram();
+            int textureEnabledHandle = program.getUniformLocation("u_TextureEnabled");
+            if (textureEnabledHandle >= 0) {
+                // Disable texturing.
+                GLES20.glUniform1i(textureEnabledHandle, 0);
+            }
+        } catch (Exception e) {
+            // Ignored
+        }
+        GLUtils.checkError("GLTextureAttribute.unset");
     }
 }

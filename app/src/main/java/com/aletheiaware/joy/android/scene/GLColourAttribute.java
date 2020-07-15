@@ -40,4 +40,9 @@ public class GLColourAttribute extends ColourAttribute {
             GLES20.glUniform4fv(colourHandle, 1, colour, 0);
         }
     }
+
+    @Override
+    public void unset(Scene scene) {
+        // Ignored
+    }
 }

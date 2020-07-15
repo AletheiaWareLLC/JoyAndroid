@@ -48,4 +48,9 @@ public class GLMaterialAttribute extends MaterialAttribute {
         }
         GLUtils.checkError("GLMaterialAttribute.set");
     }
+
+    @Override
+    public void unset(Scene scene) {
+        // Ignored
+    }
 }

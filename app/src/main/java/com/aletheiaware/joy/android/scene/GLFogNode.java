@@ -55,6 +55,15 @@ public class GLFogNode extends SceneGraphNode {
 
     @Override
     public void after(Scene scene) {
+        // Try unset u_FogEnabled
+        try {
+            GLProgram program = ((GLScene) scene).getProgramNode(programName).getProgram();
+            int fogEnabledHandle = program.getUniformLocation("u_FogEnabled");
+            // Pass in the fog information
+            GLES20.glUniform1i(fogEnabledHandle, 0);
+        } catch (Exception e) {
+            // Ignored
+        }
         GLUtils.checkError("GLFogNode.after");
     }
 }
