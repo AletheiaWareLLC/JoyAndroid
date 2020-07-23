@@ -27,12 +27,12 @@ public abstract class GLTextureAttribute extends TextureAttribute {
 
     private final String programName;
 
-    public GLTextureAttribute(String programName, String textureName) {
-        super(textureName);
+    public GLTextureAttribute(String programName) {
+        super();
         this.programName = programName;
     }
 
-    public abstract void load();
+    public abstract void load(String texture);
 
     @Override
     public void set(Scene scene) {
@@ -43,10 +43,11 @@ public abstract class GLTextureAttribute extends TextureAttribute {
             int textureHandle = program.getUniformLocation("u_Texture");
             int textureEnabledHandle = program.getUniformLocation("u_TextureEnabled");
             if (textureHandle >= 0 && textureEnabledHandle >= 0) {
-                int[] textureId = getTexture(scene);
+                String texture = getTextureName(scene);
+                int[] textureId = getTexture(scene, texture);
                 if (textureId == null || textureId.length == 0 || textureId[0] == -1) {
-                    load();
-                    textureId = getTexture(scene);
+                    load(texture);
+                    textureId = getTexture(scene, texture);
                 }
                 if (textureId != null && textureId.length > 0) {
                     // Set the active texture unit to texture unit 0.
