@@ -112,6 +112,7 @@ public class GLScene extends Scene implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl) {
+        tick();
         float r = 0.0f;
         float g = 0.0f;
         float b = 0.0f;
