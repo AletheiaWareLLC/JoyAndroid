@@ -107,6 +107,13 @@ public class GLScene extends Scene implements GLSurfaceView.Renderer {
         for (int i = 0; i < programNames.size(); i++) {
             programNodes.get(programNames.get(i)).getProgram().reshape(0, 0, width, height);
         }
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+        GLES20.glDepthFunc(GLES20.GL_LEQUAL);
+        GLES20.glEnable(GLES20.GL_CULL_FACE);
+        GLES20.glCullFace(GLES20.GL_BACK);
+        GLES20.glFrontFace(GLES20.GL_CCW);
+        GLES20.glEnable(GLES20.GL_BLEND);
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
         GLUtils.checkError("GLScene.onSurfaceChanged");
     }
 
@@ -124,13 +131,6 @@ public class GLScene extends Scene implements GLSurfaceView.Renderer {
         }
         GLES20.glClearColor(r, g, b, 1.0f);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-        GLES20.glDepthFunc(GLES20.GL_LEQUAL);
-        GLES20.glEnable(GLES20.GL_CULL_FACE);
-        GLES20.glCullFace(GLES20.GL_BACK);
-        GLES20.glFrontFace(GLES20.GL_CCW);
-        GLES20.glEnable(GLES20.GL_BLEND);
-        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
         for (int i = 0; i < programNames.size(); i++) {
             programNodes.get(programNames.get(i)).draw(this);
         }
