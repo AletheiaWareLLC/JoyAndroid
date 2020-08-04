@@ -104,9 +104,6 @@ public class GLScene extends Scene implements GLSurfaceView.Renderer {
         viewport[1] = 0;
         viewport[2] = width;
         viewport[3] = height;
-        for (int i = 0; i < programNames.size(); i++) {
-            programNodes.get(programNames.get(i)).getProgram().reshape(0, 0, width, height);
-        }
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
         GLES20.glDepthFunc(GLES20.GL_LEQUAL);
         GLES20.glEnable(GLES20.GL_CULL_FACE);

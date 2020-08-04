@@ -25,38 +25,39 @@ import com.aletheiaware.joy.scene.Vector;
 
 public class GLCameraNode extends SceneGraphNode {
 
-    private final String programName;
-
-    private float width = 0;
-    private float height = 0;
+    public final String programName;
+    public final String cameraName;
 
     public GLCameraNode(String programName) {
-        super();
-        this.programName = programName;
+        this(programName, "camera");
     }
 
-    public void setupView(Scene scene) {
+    public GLCameraNode(String programName, String cameraName) {
+        super();
+        this.programName = programName;
+        this.cameraName = cameraName;
+    }
+
+    public void setupView(Scene scene, int[] viewport, Vector eye, Vector lookAt, Vector up) {
+        // Set the viewport
+        GLES20.glViewport(viewport[0], viewport[1], viewport[2], viewport[3]);
+
         // Set the view matrix. This matrix can be said to represent the camera position.
-        Vector cameraEye = scene.getVector("camera-eye");
-        Vector cameraLookAt = scene.getVector("camera-look-at");
-        Vector cameraUp = scene.getVector("camera-up");
         Matrix view = scene.getMatrix("view");
-        android.opengl.Matrix.setLookAtM(view.get(), 0, cameraEye.getX(), cameraEye.getY(), cameraEye.getZ(), cameraLookAt.getX(), cameraLookAt.getY(), cameraLookAt.getZ(), cameraUp.getX(), cameraUp.getY(), cameraUp.getZ());
+        android.opengl.Matrix.setLookAtM(view.get(), 0, eye.getX(), eye.getY(), eye.getZ(), lookAt.getX(), lookAt.getY(), lookAt.getZ(), up.getX(), up.getY(), up.getZ());
 
         // Try set u_CameraEye
         try {
             GLProgram program = ((GLScene) scene).getProgramNode(programName).getProgram();
-            int cameraEyeHandle = program.getUniformLocation("u_CameraEye");
-            GLES20.glUniform3f(cameraEyeHandle, cameraEye.getX(), cameraEye.getY(), cameraEye.getZ());
+            int eyeHandle = program.getUniformLocation("u_CameraEye");
+            GLES20.glUniform3f(eyeHandle, eye.getX(), eye.getY(), eye.getZ());
         } catch (Exception e) {
             // Ignored
         }
     }
 
-    public void setupProjection(Scene scene, int[] viewport) {
+    public void setupProjection(Scene scene, float width, float height, float[] frustum) {
         // Create a new perspective projection matrix.
-        width = viewport[2];
-        height = viewport[3];
         float left;
         float right;
         float bottom;
@@ -76,7 +77,6 @@ public class GLCameraNode extends SceneGraphNode {
             bottom = -ratio;
             top = ratio;
         }
-        float[] frustum = scene.getFloatArray("frustum");
         float near = frustum[0];
         float far = frustum[1];
         // System.out.println("width: " + width);
@@ -93,11 +93,13 @@ public class GLCameraNode extends SceneGraphNode {
 
     @Override
     public void before(Scene scene) {
-        int[] viewport = ((GLScene) scene).getViewport();
-        if (width != viewport[2] || height != viewport[3]) {
-            setupView(scene);
-            setupProjection(scene, viewport);
-        }
+        int[] viewport = scene.getIntArray(cameraName + "-viewport");
+        Vector eye = scene.getVector(cameraName + "-eye");
+        Vector lookAt = scene.getVector(cameraName + "-look-at");
+        Vector up = scene.getVector(cameraName + "-up");
+        float[] frustum = scene.getFloatArray(cameraName + "-frustum");
+        setupView(scene, viewport, eye, lookAt, up);
+        setupProjection(scene, viewport[2], viewport[3], frustum);
         GLUtils.checkError("GLCameraNode.before");
     }
 

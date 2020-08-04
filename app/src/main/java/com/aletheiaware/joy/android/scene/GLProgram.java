@@ -84,11 +84,6 @@ public class GLProgram {
         buffers.put(name, id);
     }
 
-    public void reshape(int x, int y, int width, int height) {
-        GLES20.glViewport(x, y, width, height);
-        GLUtils.checkError("GLProgram.reshape");
-    }
-
     public void before() {
         if (program < 0) {
             start = System.currentTimeMillis();
