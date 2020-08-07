@@ -33,14 +33,14 @@ public class GLUtils {
     public static void checkError(String source) {
         int err = GLES20.glGetError();
         if (err != GLES20.GL_NO_ERROR) {
-            System.out.println(source + " GL Error " + err);
+            System.err.println(source + " GL Error " + err);
         }
     }
 
     public static void dumpGLInfo() {
-        System.err.println("GL_VENDOR: " + GLES20.glGetString(GLES20.GL_VENDOR));
-        System.err.println("GL_RENDERER: " + GLES20.glGetString(GLES20.GL_RENDERER));
-        System.err.println("GL_VERSION: " + GLES20.glGetString(GLES20.GL_VERSION));
+        System.out.println("GL_VENDOR: " + GLES20.glGetString(GLES20.GL_VENDOR));
+        System.out.println("GL_RENDERER: " + GLES20.glGetString(GLES20.GL_RENDERER));
+        System.out.println("GL_VERSION: " + GLES20.glGetString(GLES20.GL_VERSION));
     }
 
     public static int loadProgram(String vertexSource, String fragmentSource, Map<String, Integer> attributes, Map<String, Integer> uniforms) throws IOException {
@@ -55,7 +55,7 @@ public class GLUtils {
         GLES20.glGetProgramiv(programId, GLES20.GL_LINK_STATUS, linkStatus, 0);
         // If the link failed, delete the program.
         if (linkStatus[0] == 0) {
-            System.out.println(GLES20.glGetProgramInfoLog(programId));
+            System.err.println(GLES20.glGetProgramInfoLog(programId));
             GLES20.glDeleteShader(vertexShader);
             GLES20.glDeleteShader(fragmentShader);
             GLES20.glDeleteProgram(programId);
@@ -89,7 +89,7 @@ public class GLUtils {
 
             // If the compilation failed, delete the shader.
             if (compileStatus[0] == 0) {
-                System.out.println(GLES20.glGetShaderInfoLog(shader));
+                System.err.println(GLES20.glGetShaderInfoLog(shader));
                 GLES20.glDeleteShader(shader);
                 shader = 0;
             }
